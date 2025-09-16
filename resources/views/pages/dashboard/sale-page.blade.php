@@ -314,56 +314,100 @@
                 lengthChange: false
             });
         }
+        
+    //      async  function createInvoice() {
+    //         let total=document.getElementById('total').innerText;
+    //         let discount=document.getElementById('discount').innerText
+    //         let vat=document.getElementById('vat').innerText
+    //         let payable=document.getElementById('payable').innerText
+    //         let CId=document.getElementById('CId').innerText;
 
 
-
-      async  function createInvoice() {
-            let total=document.getElementById('total').innerText;
-            let discount=document.getElementById('discount').innerText
-            let vat=document.getElementById('vat').innerText
-            let payable=document.getElementById('payable').innerText
-            let CId=document.getElementById('CId').innerText;
-
-
-            let Data={
-                "total":total,
-                "discount":discount,
-                "vat":vat,
-                "payable":payable,
-                "customer_id":CId,
-                "products":InvoiceItemList
-            }
+    //         let Data={
+    //             "total":total,
+    //             "discount":discount,
+    //             "vat":vat,
+    //             "payable":payable,
+    //             "customer_id":CId,
+    //             "products":InvoiceItemList
+    //         }
 
 
-            if(CId.length===0){
-                errorToast("Customer Required !")
-            }
-            else if(InvoiceItemList.length===0){
-                errorToast("Product Required !")
-            }
-            else{
+    //         if(CId.length===0){
+    //             errorToast("Customer Required !")
+    //         }
+    //         else if(InvoiceItemList.length===0){
+    //             errorToast("Product Required !")
+    //         }
+    //         else{
 
-                showLoader();
-                let res=await axios.post("/invoice-create",Data, {
-                    headers: {
+    //             showLoader();
+    //             let res=await axios.post("/invoice-create",Data)
+    //             hideLoader();
+    //             if(res.data===1){
+    //                 window.location.href='/invoicePage'
+    //                 successToast("Invoice Created");
+    //             }
+    //             else{
+    //                 errorToast("Something Went Wrong")
+    //             }
+    //         }
+
+    //     }
+
+
+    async function createInvoice() {
+    let total = document.getElementById('total').innerText;
+    let discount = document.getElementById('discount').innerText;
+    let vat = document.getElementById('vat').innerText;
+    let payable = document.getElementById('payable').innerText;
+    let CId = document.getElementById('CId').innerText;
+
+    let Data = {
+        total: total,
+        discount: discount,
+        vat: vat,
+        payable: payable,
+        customer_id: CId,
+        products: InvoiceItemList
+    }
+
+    if (CId.length === 0) {
+        errorToast("Customer Required !");
+        return;
+    } 
+    else if (InvoiceItemList.length === 0) {
+        errorToast("Product Required !");
+        return;
+    }
+
+    try {
+        showLoader();
+        let res = await axios.post("/invoice-create", Data, {
+            headers: {
                 "user_id": localStorage.getItem("user_id"),
-                 "token": localStorage.getItem("token")
-                }
-                });
-
-                hideLoader();
-                if(res.data===1){
-                    window.location.href='/invoicePage'
-                    successToast("Invoice Created");
-                }
-                else{
-                    errorToast("Something Went Wrong")
-                }
+                "token": localStorage.getItem("token")
             }
+        });
+        hideLoader();
 
+        if (res.data === 1) {
+            window.location.href = '/invoicePage';
+            successToast("Invoice Created");
+        } else {
+            console.log(res.data);  // log response for debugging
+            errorToast("Something Went Wrong");
         }
 
-    </script>
+    } catch (err) {
+        hideLoader();
+        // Log the full error
+        console.error("Invoice creation error:", err.response ? err.response.data : err);
+        alert("Error: " + (err.response ? JSON.stringify(err.response.data) : err));
+    }
+}
+
+     </script>
 
 
 
